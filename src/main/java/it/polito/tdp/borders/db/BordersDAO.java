@@ -53,11 +53,11 @@ public class BordersDAO {
 	}
 
 	public List<Country> getCountriesFromYear(int anno, Map<Integer, Country> countriesMap) {
-		String sql = "select * from country " +
-				"where CCode in ( " +
-				"select state1no " +
-				"from contiguity " +
-				"where year<=? and conttype=1)";
+		String sql = "select * "
+				   + "from country " 
+				   + "where CCode in ( select state1no " +
+				                      "from contiguity " +
+				                      "where year<=? and conttype=1)";
 
 		try {
 			Connection conn = DBConnect.getConnection();

@@ -1,5 +1,6 @@
 package it.polito.tdp.borders.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,6 +19,8 @@ public class Model {
 
 	private Graph<Country, DefaultEdge> graph;
 	private Map<Integer, Country> countriesMap;
+	
+	private Map<Country, Integer> personeStanziali;
 
 	public Model() {
 		this.countriesMap = new HashMap<>();
@@ -45,7 +48,7 @@ public class Model {
 		List<CountryAndNumber> result = new LinkedList<>();
 
 		for (Country c : this.graph.vertexSet()) {
-			result.add(new CountryAndNumber(c, this.graph.degreeOf(c)));
+			result.add(new CountryAndNumber(c, this.graph.degreeOf(c))); //il grado del vertice corrisponde a quanti archi ha e qindi con quanti stati confina
 		}
 
 		Collections.sort(result);
@@ -59,5 +62,27 @@ public class Model {
 		}
 		return null;
 
+	}
+	
+	public int simula(Country partenza ) { //crea il simulatore e lo fa lavorare
+		Simulatore sim= new Simulatore(this.graph);
+		sim.init(partenza, 1000);
+		sim.run();
+		this.personeStanziali=sim.getPersone();
+		return sim.getnPassi();
+		
+//		System.out.println("Passi: "+ sim.getnPassi());
+//		System.out.println("Persone stanziali: "+ sim.getPersone());
+	}
+	
+	public List<CountryAndNumber> getPersoneStanziali() {
+		List<CountryAndNumber> lista= new ArrayList<CountryAndNumber>();
+		for(Country c: this.personeStanziali.keySet()) {
+			int persone= this.personeStanziali.get(c);
+			if(this.personeStanziali.get(c)!=0)
+				lista.add(new CountryAndNumber(c, persone));
+		}
+		Collections.sort(lista);
+		return lista;
 	}
 }
